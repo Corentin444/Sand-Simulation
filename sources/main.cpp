@@ -2,7 +2,7 @@
 
 int main()
 {
-    auto window = sf::RenderWindow{ { 1920u, 1080u }, "CMake SFML Project" };
+    auto window = sf::RenderWindow{ { 500u, 500u }, "SandSimulation" };
     window.setFramerateLimit(144);
 
     while (window.isOpen())
