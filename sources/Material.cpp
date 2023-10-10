@@ -1,10 +1,13 @@
 #include "../includes/Material.hpp"
+#include "../includes/Simulation.hpp"
 
 using namespace std;
 
 void Material::move_to(int x, int y, int target_x, int target_y)
 {
-    this->y += 1;
+    Material* tmp = Simulation::world[target_x][target_y];
+    Simulation::world[target_x][target_y] = Simulation::world[x][y];
+    Simulation::world[x][y] = tmp;
 }
 
 bool Material::can_move_to(int x, int y, int target_x, int target_y)
@@ -12,12 +15,10 @@ bool Material::can_move_to(int x, int y, int target_x, int target_y)
     return true;
 }
 
-int get_id() {
-    return 0;
-}
-
-void update(int x, int y)
+void Material::update(int x, int y)
 {
-    if(Material::can_move_to(x, y, x, y + 1))
+    if(Material::can_move_to(x, y, x, y + 1)) {
+        Material::move_to(x, y, x, y + 1);
+    }
     
 }

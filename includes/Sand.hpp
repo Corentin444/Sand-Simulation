@@ -2,6 +2,7 @@
 #define SAND_H
 
 #include <iostream>
+#include <SFML/Graphics.hpp>
 #include "../includes/Material.hpp"
 
 using namespace std;
@@ -9,9 +10,9 @@ using namespace std;
 class Sand : public Material
 {
 public:
-    void move_to(int x, int y, int target_x, int target_y);
     bool can_move_to(int x, int y, int target_x, int target_y);
-    int get_id();
+    int get_id() override;
+    sf::Color get_color() override;
 };
 
 #endif

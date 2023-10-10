@@ -7,8 +7,8 @@
 class Simulation
 {
 public:
-    static int width;
-    static int height;
+    static unsigned int width;
+    static unsigned int height;
     static std::vector<std::vector<Material*>> world;
     
     void init();
