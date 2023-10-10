@@ -5,7 +5,7 @@ project(SandSimulation)
 
 # Sources
 file(GLOB_RECURSE SOURCES sources/*.cpp)
-file(GLOB_RECURSE HEADERS includes/*.hpp includes/*.h sources/*.hpp sources/*.h)
+file(GLOB_RECURSE HEADERS includes/*.hpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
