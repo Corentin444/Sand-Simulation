@@ -13,6 +13,7 @@ public:
     bool can_move_to(int x, int y, int target_x, int target_y);
     int get_id() override;
     sf::Color get_color() override;
+    void update(int x, int y) override;
 };
 
 #endif

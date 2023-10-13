@@ -15,5 +15,10 @@ int Air::get_id()
 
 sf::Color Air::get_color()
 {
-    return sf::Color(210, 210, 210);
+    return sf::Color(255, 255, 255);
+}
+
+void Air::update(int x, int y)
+{
+    return;
 }

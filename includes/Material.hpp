@@ -10,10 +10,10 @@ class Material
 public:
     Material() = default;
 
-    static void update(int x, int y);
     static void move_to(int x, int y, int target_x, int target_y);
-    static bool can_move_to(int x, int y, int target_x, int target_y);
-    
+
+    virtual void update(int x, int y) = 0;
+    virtual bool can_move_to(int x, int y, int target_x, int target_y) = 0;
     virtual int get_id() = 0;
     virtual sf::Color get_color() = 0;
 };
