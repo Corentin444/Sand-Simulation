@@ -9,6 +9,7 @@ class Material
 {
 public:
     Material() = default;
+    ~Material() = default;
 
     static void move_to(int x, int y, int target_x, int target_y);
     sf::Texture* get_texture();

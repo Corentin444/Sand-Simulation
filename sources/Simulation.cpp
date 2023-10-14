@@ -2,6 +2,7 @@
 #include "../includes/Sand.hpp"
 #include "../includes/Air.hpp"
 #include "../includes/Water.hpp"
+#include "../includes/Stone.hpp"
 
 std::vector<std::vector<Material *>> Simulation::world;
 unsigned int Simulation::width;
@@ -11,7 +12,7 @@ int Simulation::brush;
 
 void Simulation::init_textures()
 {
-    std::vector<std::string> files = {"sand.png", "water.png"};
+    std::vector<std::string> files = {"sand.png", "water.png", "stone.png"};
     for (auto file : files)
     {
         sf::FileInputStream stream;
@@ -73,8 +74,7 @@ void Simulation::loop()
             case sf::Event::KeyPressed:
                 if(event.key.code == sf::Keyboard::T)
                 {
-                    Simulation::brush = (Simulation::brush + 1) % 2;
-                    printf("Brush: %d\n", Simulation::brush);
+                    Simulation::brush = (Simulation::brush + 1) % 3;
                 }
                 
             // on ne traite pas les autres types d'évènements
@@ -100,6 +100,10 @@ void Simulation::loop()
                 
                 case 1:
                     m = new Water();
+                    break;
+
+                case 2:
+                    m = new Stone();
                     break;
                 
                 default:
