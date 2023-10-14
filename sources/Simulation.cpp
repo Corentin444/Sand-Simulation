@@ -5,15 +5,27 @@
 std::vector<std::vector<Material *>> Simulation::world;
 unsigned int Simulation::width;
 unsigned int Simulation::height;
+std::vector<sf::Texture> Simulation::textures;
 
-void Simulation::init()
+void Simulation::init_textures()
 {
-    Simulation::width = 100;
-    Simulation::height = 100;
+    std::vector<std::string> files = {"air.png", "sand.png"};
+    for (auto file : files)
+    {
+        sf::FileInputStream stream;
+        stream.open("../../resources/" + file);
 
-    // création de la fenêtre
-    auto window = sf::RenderWindow{{Simulation::width, Simulation::height}, "SandSimulation"};
-    window.setFramerateLimit(144);
+        sf::Texture texture;
+        texture.loadFromStream(stream);
+
+        Simulation::textures.push_back(texture);
+    }
+}
+
+void Simulation::init_world()
+{
+    Simulation::width = 20;
+    Simulation::height = 20;
 
     // création du monde
     Simulation::world.resize(Simulation::width, std::vector<Material *>(Simulation::height, nullptr));
@@ -26,24 +38,67 @@ void Simulation::init()
     }
 
     // création d'un grain de sable
-    Sand s1;
-    Simulation::world[2][2] = &s1;
+    Sand *s1 = new Sand();
+    Simulation::world[2][2] = s1;
+}
+
+void Simulation::loop()
+{
+    const int cell_size = 16;
+
+    // création de la fenêtre
+    auto window = sf::RenderWindow{{Simulation::width * cell_size, Simulation::height * cell_size}, "SandSimulation"};
+    window.setFramerateLimit(144);
 
     // on fait tourner le programme tant que la fenêtre n'a pas été fermée
     while (window.isOpen())
     {
+        sf::sleep(sf::milliseconds(50));
         // on traite tous les évènements de la fenêtre qui ont été générés depuis la dernière itération de la boucle
-        for (auto event = sf::Event{}; window.pollEvent(event);)
+        sf::Event event;
+
+        bool click = false;
+        // tant qu'il y a des évènements à traiter...
+        while (window.pollEvent(event))
         {
-            // fermeture de la fenêtre lorsque l'utilisateur le souhaite
-            if (event.type == sf::Event::Closed)
+            // on regarde le type de l'évènement...
+            switch (event.type)
             {
+            // fenêtre fermée
+            case sf::Event::Closed:
                 window.close();
+                break;
+
+            // on ne traite pas les autres types d'évènements
+            default:
+                break;
             }
         }
 
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            // on lit la position locale de la souris (relativement à une fenêtre)
+            sf::Vector2i pos = sf::Mouse::getPosition(window); // window est un sf::Window
+            int x = pos.x / cell_size;
+            int y = pos.y / cell_size;
+            if (x < Simulation::width && y < Simulation::height && Simulation::world[x][y]->get_id() == 0)
+            {
+                Sand *s = new Sand();
+                Simulation::world[x][y] = s;
+            }
+        }
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        {
+            // on lit la position locale de la souris (relativement à une fenêtre)
+            sf::Vector2i pos = sf::Mouse::getPosition(window); // window est un sf::Window
+            int x = pos.x / cell_size;
+            int y = pos.y / cell_size;
+            Simulation::world[x][y] = new Air();
+        }
+
         // On met à jour le monde
-        for (int y = 0; y < Simulation::height; y++)
+        for (int y = Simulation::height - 1; y >= 0; y--)
         {
             for (int x = 0; x < Simulation::width; x++)
             {
@@ -51,35 +106,21 @@ void Simulation::init()
             }
         }
 
-        sf::Uint8 *pixels = new sf::Uint8[Simulation::width * Simulation::height * 4]; // * 4 car les pixels ont 4 composantes (RGBA)
+        // effacement de la fenêtre en noir
+        window.clear(sf::Color::Black);
 
+        // dessin de la frame courante
         for (int y = 0; y < Simulation::height; y++)
         {
             for (int x = 0; x < Simulation::width; x++)
             {
-                sf::Color color = Simulation::world[x][y]->get_color();
-                pixels[(x + y * Simulation::height) * 4 + 0] = color.r;
-                pixels[(x + y * Simulation::height) * 4 + 1] = color.g;
-                pixels[(x + y * Simulation::height) * 4 + 2] = color.b;
-                pixels[(x + y * Simulation::height) * 4 + 3] = color.a;
+                sf::Texture *texture = Simulation::world[x][y]->get_texture();
+                sf::Sprite sprite;
+                sprite.setTexture(*texture);
+                sprite.setPosition(sf::Vector2f(x * cell_size, y * cell_size));
+                window.draw(sprite);
             }
         }
-
-        sf::Texture texture;
-        texture.create(Simulation::width, Simulation::height);
-
-        texture.update(pixels);
-
-        sf::Sprite sprite;
-        sprite.setTexture(texture);
-
-        // effacement de la fenêtre en noir
-        window.clear(sf::Color::Black);
-
-        // coloriage de la fenetre
-        window.draw(sprite);
-
-        delete pixels;
 
         // fin de la frame courante, affichage de tout ce qu'on a dessiné
         window.display();

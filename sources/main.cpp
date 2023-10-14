@@ -6,6 +6,8 @@
 int main()
 {
     Simulation simulation;
-    simulation.init();
+    simulation.init_textures();
+    simulation.init_world();
+    simulation.loop();
     return 0;
 }

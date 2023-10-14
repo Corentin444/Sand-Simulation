@@ -10,8 +10,11 @@ public:
     static unsigned int width;
     static unsigned int height;
     static std::vector<std::vector<Material*>> world;
+    static std::vector<sf::Texture> textures;
     
-    void init();
+    void loop();
+    void init_textures();
+    void init_world();
 };
 
 #endif

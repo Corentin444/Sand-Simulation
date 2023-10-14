@@ -13,9 +13,9 @@ int Air::get_id()
     return 0;
 }
 
-sf::Color Air::get_color()
+std::string Air::get_name()
 {
-    return sf::Color(255, 255, 255);
+    return "air";
 }
 
 void Air::update(int x, int y)
