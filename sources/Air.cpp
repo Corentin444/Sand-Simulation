@@ -10,7 +10,7 @@ bool Air::can_move_to(int x, int y, int target_x, int target_y)
 
 int Air::get_id()
 {
-    return 0;
+    return -1;
 }
 
 std::string Air::get_name()

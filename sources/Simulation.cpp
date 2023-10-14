@@ -1,15 +1,17 @@
 #include "../includes/Simulation.hpp"
 #include "../includes/Sand.hpp"
 #include "../includes/Air.hpp"
+#include "../includes/Water.hpp"
 
 std::vector<std::vector<Material *>> Simulation::world;
 unsigned int Simulation::width;
 unsigned int Simulation::height;
 std::vector<sf::Texture> Simulation::textures;
+int Simulation::brush;
 
 void Simulation::init_textures()
 {
-    std::vector<std::string> files = {"air.png", "sand.png"};
+    std::vector<std::string> files = {"sand.png", "water.png"};
     for (auto file : files)
     {
         sf::FileInputStream stream;
@@ -20,12 +22,14 @@ void Simulation::init_textures()
 
         Simulation::textures.push_back(texture);
     }
+    printf("%d textures loaded\n", Simulation::textures.size());
 }
 
 void Simulation::init_world()
 {
-    Simulation::width = 20;
-    Simulation::height = 20;
+    Simulation::brush = 0;
+    Simulation::width = 50;
+    Simulation::height = 50;
 
     // création du monde
     Simulation::world.resize(Simulation::width, std::vector<Material *>(Simulation::height, nullptr));
@@ -36,14 +40,11 @@ void Simulation::init_world()
             Simulation::world[i][j] = new Air();
         }
     }
-
-    // création d'un grain de sable
-    Sand *s1 = new Sand();
-    Simulation::world[2][2] = s1;
 }
 
 void Simulation::loop()
 {
+    Simulation::brush = 0;
     const int cell_size = 16;
 
     // création de la fenêtre
@@ -68,7 +69,14 @@ void Simulation::loop()
             case sf::Event::Closed:
                 window.close();
                 break;
-
+               
+            case sf::Event::KeyPressed:
+                if(event.key.code == sf::Keyboard::T)
+                {
+                    Simulation::brush = (Simulation::brush + 1) % 2;
+                    printf("Brush: %d\n", Simulation::brush);
+                }
+                
             // on ne traite pas les autres types d'évènements
             default:
                 break;
@@ -81,10 +89,23 @@ void Simulation::loop()
             sf::Vector2i pos = sf::Mouse::getPosition(window); // window est un sf::Window
             int x = pos.x / cell_size;
             int y = pos.y / cell_size;
-            if (x < Simulation::width && y < Simulation::height && Simulation::world[x][y]->get_id() == 0)
+            if (x < Simulation::width && y < Simulation::height && Simulation::world[x][y]->get_id() == -1)
             {
-                Sand *s = new Sand();
-                Simulation::world[x][y] = s;
+                Material *m;
+                switch (Simulation::brush)
+                {
+                case 0:
+                    m = new Sand();
+                    break;
+                
+                case 1:
+                    m = new Water();
+                    break;
+                
+                default:
+                    break;
+                }
+                Simulation::world[x][y] = m;
             }
         }
 
@@ -114,11 +135,14 @@ void Simulation::loop()
         {
             for (int x = 0; x < Simulation::width; x++)
             {
-                sf::Texture *texture = Simulation::world[x][y]->get_texture();
-                sf::Sprite sprite;
-                sprite.setTexture(*texture);
-                sprite.setPosition(sf::Vector2f(x * cell_size, y * cell_size));
-                window.draw(sprite);
+                if (Simulation::world[x][y]->get_id() != -1)
+                {
+                    sf::Texture *texture = Simulation::world[x][y]->get_texture();
+                    sf::Sprite sprite;
+                    sprite.setTexture(*texture);
+                    sprite.setPosition(sf::Vector2f(x * cell_size, y * cell_size));
+                    window.draw(sprite);
+                }
             }
         }
 

@@ -11,6 +11,7 @@ public:
     static unsigned int height;
     static std::vector<std::vector<Material*>> world;
     static std::vector<sf::Texture> textures;
+    static int brush;
     
     void loop();
     void init_textures();
