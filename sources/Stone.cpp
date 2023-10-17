@@ -4,11 +4,6 @@
 
 using namespace std;
 
-bool Stone::can_move_to(int x, int y, int target_x, int target_y)
-{
-    return false;
-}
-
 int Stone::get_id()
 {
     return 2;
@@ -21,5 +16,5 @@ std::string Stone::get_name()
 
 void Stone::update(int x, int y)
 {
-    return;
+    update_solid(x, y);
 }

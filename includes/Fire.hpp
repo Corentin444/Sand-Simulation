@@ -1,5 +1,5 @@
-#ifndef SAND_H
-#define SAND_H
+#ifndef FIRE_H
+#define FIRE_H
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class Sand : public Material
+class Fire : public Material
 {
 public:
     int get_id() override;

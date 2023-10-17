@@ -1,5 +1,5 @@
-#ifndef SAND_H
-#define SAND_H
+#ifndef WOOD_H
+#define WOOD_H
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class Sand : public Material
+class Wood : public Material
 {
 public:
     int get_id() override;

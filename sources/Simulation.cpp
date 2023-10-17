@@ -3,6 +3,9 @@
 #include "../includes/Air.hpp"
 #include "../includes/Water.hpp"
 #include "../includes/Stone.hpp"
+#include "../includes/Wood.hpp"
+#include "../includes/Smoke.hpp"
+#include "../includes/Stone.hpp"
 
 std::vector<std::vector<Material *>> Simulation::world;
 unsigned int Simulation::width;
@@ -12,7 +15,7 @@ int Simulation::brush;
 
 void Simulation::init_textures()
 {
-    std::vector<std::string> files = {"sand.png", "water.png", "stone.png"};
+    std::vector<std::string> files = {"sand.png", "water.png", "stone.png", "wood.png", "smoke.png", "fire.png"};
     for (auto file : files)
     {
         sf::FileInputStream stream;
@@ -70,13 +73,13 @@ void Simulation::loop()
             case sf::Event::Closed:
                 window.close();
                 break;
-               
+
             case sf::Event::KeyPressed:
-                if(event.key.code == sf::Keyboard::T)
+                if (event.key.code == sf::Keyboard::T)
                 {
-                    Simulation::brush = (Simulation::brush + 1) % 3;
+                    Simulation::brush = (Simulation::brush + 1) % 6;
                 }
-                
+
             // on ne traite pas les autres types d'évènements
             default:
                 break;
@@ -97,7 +100,7 @@ void Simulation::loop()
                 case 0:
                     m = new Sand();
                     break;
-                
+
                 case 1:
                     m = new Water();
                     break;
@@ -105,7 +108,19 @@ void Simulation::loop()
                 case 2:
                     m = new Stone();
                     break;
-                
+
+                case 3:
+                    m = new Wood();
+                    break;
+
+                case 4:
+                    m = new Smoke();
+                    break;
+
+                case 5:
+                    m = new Fire();
+                    break;
+
                 default:
                     break;
                 }
@@ -127,7 +142,11 @@ void Simulation::loop()
         {
             for (int x = 0; x < Simulation::width; x++)
             {
-                Simulation::world[x][y]->update(x, y);
+                if (!Simulation::world[x][y]->updated)
+                {
+                    Simulation::world[x][y]->update(x, y);
+                    Simulation::world[x][y]->updated = true;
+                }
             }
         }
 

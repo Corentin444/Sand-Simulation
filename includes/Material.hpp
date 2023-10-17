@@ -8,16 +8,25 @@ using namespace std;
 class Material
 {
 public:
-    Material() = default;
+    Material();
     ~Material() = default;
 
-    static void move_to(int x, int y, int target_x, int target_y);
+    void move_to(int x, int y, int target_x, int target_y);
+    bool can_move_to(int x, int y, int target_x, int target_y);
+
     sf::Texture* get_texture();
 
     virtual void update(int x, int y) = 0;
-    virtual bool can_move_to(int x, int y, int target_x, int target_y) = 0;
     virtual int get_id() = 0;
     virtual std::string get_name() = 0;
+
+    void update_dust(int x, int y);
+    void update_liquid(int x, int y);
+    void update_solid(int x, int y);
+    void update_gaz(int x, int y);
+
+    int r;
+    bool updated;
 };
 
 #endif
