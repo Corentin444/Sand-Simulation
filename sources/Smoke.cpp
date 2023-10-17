@@ -6,7 +6,7 @@ using namespace std;
 
 int Smoke::get_id()
 {
-    return 5;
+    return 4;
 }
 
 std::string Smoke::get_name()

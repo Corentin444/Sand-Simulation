@@ -32,6 +32,11 @@ sf::Texture *Material::get_texture()
     return &Simulation::textures[this->get_id()];
 }
 
+sf::SoundBuffer *Material::get_sound()
+{
+    return &Simulation::sounds[this->get_id()];
+}
+
 void Material::update_dust(int x, int y)
 {
     std::vector<std::pair<int, int>> directions = {{0, 1}, {r, 1}, {-r, 1}};

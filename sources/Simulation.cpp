@@ -6,20 +6,23 @@
 #include "../includes/Wood.hpp"
 #include "../includes/Smoke.hpp"
 #include "../includes/Stone.hpp"
+#include "../includes/Fire.hpp"
+#include <SFML/Audio.hpp>
 
 std::vector<std::vector<Material *>> Simulation::world;
 unsigned int Simulation::width;
 unsigned int Simulation::height;
 std::vector<sf::Texture> Simulation::textures;
+std::vector<sf::SoundBuffer> Simulation::sounds;
 int Simulation::brush;
 
 void Simulation::init_textures()
 {
-    std::vector<std::string> files = {"sand.png", "water.png", "stone.png", "wood.png", "smoke.png", "fire.png"};
-    for (auto file : files)
+    std::vector<std::string> texture_files = {"sand.png", "water.png", "stone.png", "wood.png", "smoke.png", "fire.png"};
+    for (auto file : texture_files)
     {
         sf::FileInputStream stream;
-        stream.open("../../resources/" + file);
+        stream.open("../../resources/textures/" + file);
 
         sf::Texture texture;
         texture.loadFromStream(stream);
@@ -27,6 +30,19 @@ void Simulation::init_textures()
         Simulation::textures.push_back(texture);
     }
     printf("%d textures loaded\n", Simulation::textures.size());
+}
+
+void Simulation::init_sounds()
+{
+    std::vector<std::string> sound_files = {"sand.ogg", "water.ogg", "stone.ogg", "wood.ogg", "smoke.ogg", "fire.ogg"};
+    for (auto file : sound_files)
+    {
+        sf::SoundBuffer buffer;
+        buffer.loadFromFile("../../resources/sounds/" + file);
+
+        Simulation::sounds.push_back(buffer);
+    }
+    printf("%d sounds loaded\n", Simulation::sounds.size());
 }
 
 void Simulation::init_world()
@@ -49,6 +65,7 @@ void Simulation::init_world()
 void Simulation::loop()
 {
     Simulation::brush = 0;
+    sf::Sound sound;
     const int cell_size = 16;
 
     // création de la fenêtre
@@ -125,6 +142,11 @@ void Simulation::loop()
                     break;
                 }
                 Simulation::world[x][y] = m;
+                if (sound.getStatus() != sf::Sound::Playing)
+                {
+                    sound.setBuffer(*Simulation::world[x][y]->get_sound());
+                    sound.play();
+                }
             }
         }
 

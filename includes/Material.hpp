@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 using namespace std;
 
 class Material
@@ -15,6 +16,7 @@ public:
     bool can_move_to(int x, int y, int target_x, int target_y);
 
     sf::Texture* get_texture();
+    sf::SoundBuffer* get_sound();
 
     virtual void update(int x, int y) = 0;
     virtual int get_id() = 0;
