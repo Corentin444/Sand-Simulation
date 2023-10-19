@@ -21,6 +21,11 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 # C++ 17
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
+# Includes
+target_include_directories(${PROJECT_NAME} PUBLIC includes)
+target_include_directories(${PROJECT_NAME} PUBLIC sources)
+
+# Libraries
 target_link_libraries(SandSimulation PRIVATE sfml-graphics sfml-audio)
 target_compile_features(SandSimulation PRIVATE cxx_std_17)
 

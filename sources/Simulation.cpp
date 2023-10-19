@@ -1,15 +1,16 @@
-#include "../includes/Simulation.hpp"
-#include "../includes/Sand.hpp"
-#include "../includes/Air.hpp"
-#include "../includes/Water.hpp"
-#include "../includes/Stone.hpp"
-#include "../includes/Wood.hpp"
-#include "../includes/Smoke.hpp"
-#include "../includes/Stone.hpp"
-#include "../includes/Fire.hpp"
+#include "Simulation.hpp"
+#include "blocks/Air.hpp"
+#include "blocks/Dirt.hpp"
+#include "blocks/Fire.hpp"
+#include "blocks/Grass.hpp"
+#include "blocks/Lava.hpp"
+#include "blocks/Planks.hpp"
+#include "blocks/Sand.hpp"
+#include "blocks/Stone.hpp"
+#include "blocks/Water.hpp"
 #include <SFML/Audio.hpp>
 
-std::vector<std::vector<Material *>> Simulation::world;
+std::vector<std::vector<Block *>> Simulation::world;
 unsigned int Simulation::width;
 unsigned int Simulation::height;
 std::vector<sf::Texture> Simulation::textures;
@@ -18,11 +19,11 @@ int Simulation::brush;
 
 void Simulation::init_textures()
 {
-    std::vector<std::string> texture_files = {"sand.png", "water.png", "stone.png", "wood.png", "smoke.png", "fire.png"};
+    std::vector<std::string> texture_files = {"dirt.png", "fire.png", "grass.png", "lava.png", "planks.png", "sand.png", "stone.png", "water.png"};
     for (auto file : texture_files)
     {
         sf::FileInputStream stream;
-        stream.open("../../resources/textures/" + file);
+        stream.open("../resources/textures/" + file);
 
         sf::Texture texture;
         texture.loadFromStream(stream);
@@ -34,11 +35,11 @@ void Simulation::init_textures()
 
 void Simulation::init_sounds()
 {
-    std::vector<std::string> sound_files = {"sand.ogg", "water.ogg", "stone.ogg", "wood.ogg", "smoke.ogg", "fire.ogg"};
+    std::vector<std::string> sound_files = {"dirt.ogg", "fire.ogg", "grass.ogg", "lava.ogg", "planks.ogg", "sand.ogg", "stone.ogg", "water.ogg"};
     for (auto file : sound_files)
     {
         sf::SoundBuffer buffer;
-        buffer.loadFromFile("../../resources/sounds/" + file);
+        buffer.loadFromFile("../resources/sounds/place/" + file);
 
         Simulation::sounds.push_back(buffer);
     }
@@ -52,7 +53,7 @@ void Simulation::init_world()
     Simulation::height = 50;
 
     // création du monde
-    Simulation::world.resize(Simulation::width, std::vector<Material *>(Simulation::height, nullptr));
+    Simulation::world.resize(Simulation::width, std::vector<Block *>(Simulation::height, nullptr));
     for (int i = 0; i < Simulation::width; i++)
     {
         for (int j = 0; j < Simulation::height; j++)
@@ -94,7 +95,7 @@ void Simulation::loop()
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::T)
                 {
-                    Simulation::brush = (Simulation::brush + 1) % 6;
+                    Simulation::brush = (Simulation::brush + 1) % 8;
                 }
 
             // on ne traite pas les autres types d'évènements
@@ -111,31 +112,39 @@ void Simulation::loop()
             int y = pos.y / cell_size;
             if (x < Simulation::width && y < Simulation::height && Simulation::world[x][y]->get_id() == -1)
             {
-                Material *m;
+                Block *m;
                 switch (Simulation::brush)
                 {
                 case 0:
-                    m = new Sand();
+                    m = new Dirt();
                     break;
 
                 case 1:
-                    m = new Water();
+                    m = new Fire();
                     break;
 
                 case 2:
-                    m = new Stone();
+                    m = new Grass();
                     break;
 
                 case 3:
-                    m = new Wood();
+                    m = new Lava();
                     break;
 
                 case 4:
-                    m = new Smoke();
+                    m = new Planks();
                     break;
 
                 case 5:
-                    m = new Fire();
+                    m = new Sand();
+                    break;
+                
+                case 6:
+                    m = new Stone();
+                    break;
+                
+                case 7:
+                    m = new Water();
                     break;
 
                 default:

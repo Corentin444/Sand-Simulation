@@ -1,7 +1,7 @@
-une classe simulation avec un double vector de material
+une classe simulation avec un double vector de block
 taille de la simulation
 
-classe parente material
+classe parente block
 avec static
 
 une fonction get color
